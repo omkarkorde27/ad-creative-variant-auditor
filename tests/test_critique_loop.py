@@ -142,12 +142,16 @@ def test_truncate_prefers_sentence_boundary_over_word_boundary() -> None:
         "This jacket is fully waterproof. It also has a secure zip closure and "
         "interior pockets for gear."
     )
-    result = truncate_to_limit(text, 60)
+    # max_chars=45 (not 60): the sentence boundary is 33 chars, and the retention floor
+    # (MIN_WORD_BOUNDARY_FRACTION=0.7) now applies to ALL boundary types, not just the
+    # word-boundary step (the ddba70a fix) — 33/60 = 55% would be rejected, but 33/45 = 73%
+    # clears the floor, so the sentence boundary is still preferred here.
+    result = truncate_to_limit(text, 45)
     # Ends on the sentence-ending period, not mid-word ("...zip cl") like a plain
-    # word-boundary cut at 60 chars would.
+    # word-boundary cut at 45 chars would.
     assert result == "This jacket is fully waterproof."
     assert result[-1] in ".!?"
-    assert len(result) <= 60
+    assert len(result) <= 45
 
 
 def test_truncate_prefers_clause_boundary_when_no_sentence_ending_fits() -> None:

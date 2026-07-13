@@ -118,7 +118,7 @@ def test_call_passes_feedback_into_payload(
 def test_format_angle_renders_explicit_and_empties() -> None:
     assert _format_angle("") == ""  # no angle -> model derives its own
     section = _format_angle("Lead with the strongest benefit")
-    assert section.startswith("Angle to take:")
+    assert "Assigned strategic angle" in section
     assert "Lead with the strongest benefit" in section  # included verbatim
 
 

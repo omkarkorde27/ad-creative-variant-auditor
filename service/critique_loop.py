@@ -13,7 +13,6 @@ Design commitments (see CLAUDE.md):
     with a stub generator before the agent exists.
 """
 from __future__ import annotations
-from anthropic.types import bash_code_execution_tool_result_error_code
 
 from dataclasses import dataclass, replace
 from typing import Literal, Protocol
@@ -135,6 +134,27 @@ def _last_word_boundary(text: str, max_chars: int) -> str:
 
 
 def truncate_to_limit(text: str, max_chars: int) -> str:
+    """Deterministically shorten ``text`` to at most ``max_chars`` characters.
+
+    This is the last-resort path: it runs only after the critique loop has already
+    exhausted every LLM retry, so it cannot depend on another model call succeeding.
+    ``len(result) <= max_chars`` is a hard constraint here, never a target.
+
+    Searches backward from the limit for the most coherent cut, in priority order:
+      1. The last sentence-ending punctuation (``. ! ?``) at or before the limit.
+      2. The last clause-boundary punctuation (``, ; —``) at or before the limit.
+      3. The last whole-word boundary at or before the limit.
+      4. A hard character slice, when nothing above yields an acceptable cut (e.g. a
+         single word longer than the limit) — still guarantees a non-empty result.
+
+    Each of steps 1-3 is accepted only if it keeps at least ``MIN_WORD_BOUNDARY_FRACTION``
+    of the character budget (``min_acceptable`` below) — a coherent-but-tiny cut (e.g. a
+    sentence-ending period at 15% of the limit) is rejected in favor of a longer, less
+    "clean" boundary, since discarding most of the budget just to end on punctuation
+    defeats the point of truncating gracefully in the first place. This check originally
+    applied only to step 3; extending it to steps 1-2 was a real bug fix — see
+    design-decisions.md.
+    """
     text = text.strip()
     if count_chars(text) <= max_chars:
         return text
