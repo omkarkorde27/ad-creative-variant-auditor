@@ -135,35 +135,22 @@ def _last_word_boundary(text: str, max_chars: int) -> str:
 
 
 def truncate_to_limit(text: str, max_chars: int) -> str:
-    """Deterministically shorten ``text`` to at most ``max_chars`` characters.
-
-    This is the last-resort path: it runs only after the critique loop has already
-    exhausted every LLM retry, so it cannot depend on another model call succeeding.
-    ``len(result) <= max_chars`` is a hard constraint here, never a target.
-
-    Searches backward from the limit for the most coherent cut, in priority order:
-      1. The last sentence-ending punctuation (``. ! ?``) at or before the limit.
-      2. The last clause-boundary punctuation (``, ; —``) at or before the limit.
-      3. The last whole-word boundary at or before the limit — but only if neither of
-         the above exists and the word boundary itself doesn't sacrifice more than
-         ~30% of the available characters just to reach it (``MIN_WORD_BOUNDARY_FRACTION``).
-      4. A hard character slice, when nothing above yields an acceptable cut (e.g. a
-         single word longer than the limit) — still guarantees a non-empty result.
-    """
     text = text.strip()
     if count_chars(text) <= max_chars:
         return text
 
+    min_acceptable = max_chars * MIN_WORD_BOUNDARY_FRACTION
+
     sentence = _last_punctuation_boundary(text, max_chars, SENTENCE_ENDINGS)
-    if sentence:
+    if sentence and count_chars(sentence) >= min_acceptable:
         return sentence
 
     clause = _last_punctuation_boundary(text, max_chars, CLAUSE_ENDINGS)
-    if clause:
+    if clause and count_chars(clause) >= min_acceptable:
         return clause
 
     word_boundary = _last_word_boundary(text, max_chars)
-    if count_chars(word_boundary) >= max_chars * MIN_WORD_BOUNDARY_FRACTION:
+    if count_chars(word_boundary) >= min_acceptable:
         return word_boundary
 
     return text[:max_chars]
