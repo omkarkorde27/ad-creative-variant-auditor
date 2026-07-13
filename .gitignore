@@ -10,8 +10,5 @@ wheels/
 # Virtual environments
 .venv
 
-# Claude AI Files
-/.claude/*
-
 #.env
 .env
