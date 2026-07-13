@@ -1,0 +1,286 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f6f7f9;
+  --card-bg: #ffffff;
+  --text: #1c1e21;
+  --muted: #6b7280;
+  --border: #e3e6ea;
+  --accent: #2563eb;
+  --green-bg: #e7f6ec;
+  --green-fg: #1a7f37;
+  --amber-bg: #fdf1dc;
+  --amber-fg: #a15c07;
+  --red: #c0362c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16181c;
+    --card-bg: #1f2227;
+    --text: #e7e9ec;
+    --muted: #9aa1ab;
+    --border: #33373e;
+    --accent: #5b8bff;
+    --green-bg: #13341f;
+    --green-fg: #4ade80;
+    --amber-bg: #3a2a10;
+    --amber-fg: #f0b35b;
+    --red: #f27267;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.app__title {
+  margin: 0 0 0.25rem;
+  font-size: 1.6rem;
+}
+
+.app__lede {
+  margin: 0 0 1.5rem;
+  color: var(--muted);
+  max-width: 60ch;
+}
+
+.app__input {
+  width: 100%;
+  padding: 0.85rem;
+  font: inherit;
+  color: var(--text);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  resize: vertical;
+}
+
+.app__input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.app__actions {
+  margin: 1rem 0;
+}
+
+.app__button {
+  font: inherit;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.4rem;
+  cursor: pointer;
+}
+
+.app__button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.app__error {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: var(--amber-bg);
+  color: var(--red);
+  border: 1px solid var(--border);
+}
+
+.cards {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  margin-top: 1.5rem;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.card__title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.card__badges {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.badge--ai_approved {
+  background: var(--green-bg);
+  color: var(--green-fg);
+}
+
+.badge--fallback_truncated {
+  background: var(--amber-bg);
+  color: var(--amber-fg);
+}
+
+.badge--distinct {
+  background: var(--green-bg);
+  color: var(--green-fg);
+}
+
+.badge--similar {
+  background: var(--amber-bg);
+  color: var(--amber-fg);
+}
+
+/* Judge badges use the same semantics (green = distinct, amber = collision) as the lexical
+   badges; the "judge:"/"lexical:" prefixes in the label distinguish the two signals. */
+.badge--judge-distinct {
+  background: var(--green-bg);
+  color: var(--green-fg);
+}
+
+.badge--judge-similar {
+  background: var(--amber-bg);
+  color: var(--amber-fg);
+}
+
+.card__disagree {
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  background: var(--amber-bg);
+  color: var(--amber-fg);
+  border: 1px solid var(--border);
+}
+
+.card__distinct-note {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--amber-fg);
+  font-style: italic;
+}
+
+.card__text {
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+.card__count {
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.card__count--over {
+  color: var(--red);
+  font-weight: 600;
+}
+
+.trail {
+  border-top: 1px solid var(--border);
+  padding-top: 0.5rem;
+}
+
+.trail summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.trail__list {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.attempt {
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  border-radius: 6px;
+  padding: 0.5rem 0.6rem;
+}
+
+.attempt--pass {
+  border-left-color: var(--green-fg);
+}
+
+.attempt--fail {
+  border-left-color: var(--amber-fg);
+}
+
+.attempt__head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: baseline;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.attempt__num {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.attempt__count {
+  font-variant-numeric: tabular-nums;
+}
+
+.attempt__verdict {
+  margin-left: auto;
+  font-weight: 700;
+}
+
+.attempt__text {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+}
+
+.attempt__note {
+  margin: 0.3rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-style: italic;
+}

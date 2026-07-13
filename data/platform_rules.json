@@ -4,19 +4,22 @@
             "name": "search_ad",
             "label": "Search Ad",
             "max_chars": 30,
-            "style": "Hyper-optimized headline, no emojis, strongest single benefit only"
+            "style": "Hyper-optimized headline, no emojis, strongest single benefit only, a headline not a sentence",
+            "angle": "Lead with the single strongest benefit as a direct, action-oriented answer to high purchase intent (e.g. 'solves X', 'get Y now') — outcome and urgency framing, not a general value statement"
         },
         {
             "name": "social_ad",
             "label": "Social Ad",
             "max_chars": 125,
-            "style": "Punchy, conversational caption, emojis welcome"
+            "style": "Punchy, conversational caption, emojis welcome",
+            "angle": "Spark an emotional, lifestyle reaction: how it feels to use, not a spec list"
         },
         {
             "name": "display_banner",
             "label": "Display Banner",
             "max_chars": 90,
-            "style": "Crisp value-proposition statement, no emojis"
+            "style": "Crisp value-proposition statement, no emojis",
+            "angle": "State who this is for and why they should trust it — a credibility, quality, or audience-fit signal (materials, reputation, who it suits), for someone passively browsing rather than searching. Avoid restating a benefit or outcome claim; lead with trust or fit instead"
         }
     ]
 }
