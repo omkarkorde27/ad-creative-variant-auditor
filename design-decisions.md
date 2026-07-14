@@ -236,32 +236,6 @@ checked against human judgment. The judge inherits the same "never validated aga
 real human review" weakness already named for the lexical metric; a more fluent-sounding
 rationale is not the same thing as a correct one.
 
-**Follow-up: one candidate resolved, two remain genuinely open.** Verdict instability
-across repeated judge calls on the same input was observed on two fixtures on the same
-run that validated the structured-output fix: a label flip (True/False/True) across 3
-repeats on one, and over-inclusion of a platform in the flagged set on another, both
-previously stable.
-
-The first candidate — judge temperature possibly never deliberately set — is resolved,
-though not the way it sounds. `temperature` is not merely unset; it *cannot* be set.
-Claude Sonnet 5 rejects any explicit `temperature` (even `0.0`) with a 400
-(`` 'temperature' is deprecated for this model``), so `agent/judge.py` omits the
-parameter entirely rather than picking a "safe" value. The instability therefore
-happens under the model's own default, unconfigurable sampling behavior — there was
-never a missing config knob to turn, and none of the fixes below touch this.
-
-The other two candidates remain unresolved. Whether the structured-output switch
-itself subtly changed reasoning quality (not just parse reliability), or these are
-genuinely borderline cases where instability reflects real ambiguity rather than a
-defect — both are still open. The necklace flip and the drone over-inclusion were both
-observed for the first time on the run immediately *after* the structured-output
-switch, on fixtures that had been stable before it — but with no `temperature` control
-possible and only one run per condition, ordinary sampling variance cannot be ruled
-out as the cause either. Recorded as observed, not attributed — the same standard set
-by the 002_jeans and Agentforce/Cavalier findings above: read a disagreement by hand,
-don't assume the newer or more "structural-sounding" signal is right just because it
-looks more sophisticated.
-
 ## Evaluation approach
 
 Early iterations were evaluated by reading UI screenshots of individual runs. This is
