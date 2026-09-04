@@ -65,12 +65,13 @@ Open the URL Vite prints (default **http://localhost:5173**).
 
 ## Deploy — Vercel
 
-`vercel.json` builds `frontend/` to `frontend/dist` (served as the static site) and deploys
-`api/main.py` as a Python serverless function; `/api/*` requests are rewritten to that function,
-which still sees the real request path, so FastAPI's own `/api/generate` route dispatches
-correctly. The two-process dev proxy and the single-port shipped mode above are unrelated to
-this — Vercel serves the static build and the API function separately, not via `api/main.py`'s
-`StaticFiles` mount.
+`vercel.json`'s `buildCommand` builds `frontend/` to `frontend/dist`, and `api/main.py` is
+auto-detected as a Python serverless function. In practice Vercel deploys this as effectively one
+function: the frontend build ends up bundled alongside it, so `api/main.py`'s own `StaticFiles`
+mount (the same one used in local shipped mode) is what serves `/` and the built JS/CSS there —
+there's no separate static host in front of it. Because of that, `vercel.json` deliberately has no
+`rewrites`: the request path Vercel hands the function is the real one, and `/api/generate` only
+resolves correctly if it isn't rewritten to something else first.
 
 Before deploying, set `ANTHROPIC_API_KEY` in the Vercel project's Environment Variables (Project
 Settings → Environment Variables) — `.env` is gitignored and is never uploaded, so the key has to
