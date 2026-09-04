@@ -9,6 +9,7 @@ also serves the built React frontend so the whole app runs on one port.
 
 from __future__ import annotations
 
+import os
 import threading
 from pathlib import Path
 from typing import Any
@@ -71,6 +72,11 @@ def generate(req: GenerateRequest) -> list[dict[str, Any]]:
 # Shipped mode: serve the built SPA on the same origin/port as the API. The
 # specific /api/generate route above is registered first, so it always wins;
 # this catch-all mount only handles everything else (index.html, assets). The
-# guard keeps dev mode (no build present) booting cleanly.
-if _DIST_DIR.is_dir():
+# guard keeps dev mode (no build present) booting cleanly. On Vercel (`VERCEL`
+# is always set in that runtime) the frontend is deployed separately as a
+# static site by vercel.json's outputDirectory, so this function should only
+# ever answer /api/generate — mounting StaticFiles here too would let it swallow
+# any request whose path doesn't hit that route with a misleading 404/405
+# instead of FastAPI's own routing error.
+if _DIST_DIR.is_dir() and not os.environ.get("VERCEL"):
     app.mount("/", StaticFiles(directory=_DIST_DIR, html=True), name="frontend")
