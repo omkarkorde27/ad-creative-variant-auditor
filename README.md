@@ -63,6 +63,19 @@ cd frontend && npm run dev
 
 Open the URL Vite prints (default **http://localhost:5173**).
 
+## Deploy — Vercel
+
+`vercel.json` builds `frontend/` to `frontend/dist` (served as the static site) and deploys
+`api/main.py` as a Python serverless function; `/api/*` requests are rewritten to that function,
+which still sees the real request path, so FastAPI's own `/api/generate` route dispatches
+correctly. The two-process dev proxy and the single-port shipped mode above are unrelated to
+this — Vercel serves the static build and the API function separately, not via `api/main.py`'s
+`StaticFiles` mount.
+
+Before deploying, set `ANTHROPIC_API_KEY` in the Vercel project's Environment Variables (Project
+Settings → Environment Variables) — `.env` is gitignored and is never uploaded, so the key has to
+be set there directly.
+
 ## API
 
 `POST /api/generate` — body `{ "product_source": "..." }`; empty source returns `422`.
